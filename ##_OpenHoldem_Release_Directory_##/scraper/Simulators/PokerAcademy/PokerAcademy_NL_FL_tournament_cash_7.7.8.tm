@@ -1,16 +1,15 @@
 .osdb2
 
-// OpenScrape 7.7.0
+// OpenScrape 14.1.0
 
-// 2015-05-04 11:18:16
 // 32 bits per pixel
 
 //
 // sizes
 //
 
-z$clientsizemin     600  400
-z$clientsizemax    2000 1600
+z$clientsizemax    2000  1600
+z$clientsizemin    600  400
 z$targetsize       1018  693
 
 //
@@ -18,6 +17,10 @@ z$targetsize       1018  693
 //
 
 s$allinconfirmationmethod   1
+s$betsizeconfirmationmethod Click Bet
+s$betsizedeletionmethod     Nothing
+s$betsizeinterpretationmethod 1
+s$betsizeselectionmethod    Sgl Click
 s$c0limits                  ^*:^s/^b
 s$c0limits0                 ^*es:$^s/$^b^*
 s$c0limits1                 ^*te:$^a
@@ -25,10 +28,6 @@ s$nchairs                   10
 s$network                   partypoker
 s$potmethod                 2
 s$sitename                  pokeracademy
-s$betsizeconfirmationmethod    Click Bet
-s$betsizedeletionmethod        Nothing
-s$betsizeinterpretationmethod  1
-s$betsizeselectionmethod       Single Click
 s$t0type                    fuzzy
 s$t1type                    fuzzy
 s$t2type                    fuzzy
