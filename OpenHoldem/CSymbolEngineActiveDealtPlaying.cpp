@@ -131,12 +131,12 @@ void CSymbolEngineActiveDealtPlaying::CalculateDealtBits() {
 	for (int i=0; i<p_tablemap->nchairs(); i++) {
 		int chair_to_consider = (DEALER_CHAIR + i + 1) % p_tablemap->nchairs();
 		bool this_player_got_dealt = false;
-    // Players with cards are always "dealt",
-    // independent of the rest of following complicated logic,
-    // which might fail, especially in case of GIGO.
-    if (p_table_state->Player(chair_to_consider)->HasAnyCards()) {
-      this_player_got_dealt = true;
-    }
+		// Players with cards are always "dealt",
+		// independent of the rest of following complicated logic,
+		// which might fail, especially in case of GIGO.
+		if (p_table_state->Player(chair_to_consider)->HasAnyCards()) {
+			this_player_got_dealt = true;
+		}
 		// First we search the blinds only, 
 		// i.e. players with a positive bet.
 		// We don't consider players who are only "active",
@@ -144,9 +144,9 @@ void CSymbolEngineActiveDealtPlaying::CalculateDealtBits() {
 		if ((number_of_blind_posters_found < kUsualNumberOfBlindPosters) && ! big_blind_found) {
 			double bet = p_table_state->Player(chair_to_consider)->_bet.GetValue();
 			if (bet > 0) {
-        write_log(Preferences()->debug_symbolengine(),
-          "[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i is a blind poster\n",
-          chair_to_consider);
+				write_log(Preferences()->debug_symbolengine(),
+					"[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i is a blind poster\n",
+					chair_to_consider);
 				number_of_blind_posters_found++;
 				this_player_got_dealt = true;
 			}
@@ -166,23 +166,23 @@ void CSymbolEngineActiveDealtPlaying::CalculateDealtBits() {
 		// After this player we look for cards only,
 		// because there can be no quick folds after him.
 		else if (p_table_state->Player(chair_to_consider)->HasAnyCards()) {
-      // Player with cards found
-      write_log(Preferences()->debug_symbolengine(),
-        "[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i holds cards, therefore dealt\n",
-        chair_to_consider);
+			// Player with cards found
+			write_log(Preferences()->debug_symbolengine(),
+				"[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i holds cards, therefore dealt\n",
+				chair_to_consider);
 			this_player_got_dealt = true;
-      first_non_blind_with_cards_found = true;
+			first_non_blind_with_cards_found = true;
 		} else {
-      // Player has no cards
-      if (first_non_blind_with_cards_found == false) {
-        // Not yet anybody with cards outside the blinds found
-        // Consider active players as dealt with fast folds.
-			  if (p_table_state->Player(chair_to_consider)->active()) {
-          write_log(Preferences()->debug_symbolengine(),
-            "[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i is active after the blinds, probably dealt and fast fold\n",
-            chair_to_consider);
-				  this_player_got_dealt = true;    
-        }
+			// Player has no cards
+			if (first_non_blind_with_cards_found == false) {
+				// Not yet anybody with cards outside the blinds found
+				// Consider active players as dealt with fast folds.
+				if (p_table_state->Player(chair_to_consider)->_bet.GetValue() > 0 || p_table_state->Player(chair_to_consider)->_balance.GetValue() > 0) {
+					write_log(Preferences()->debug_symbolengine(),
+						"[CSymbolEngineActiveDealtPlaying] CalculateDealtBits() chair %i is active after the blinds, probably dealt and fast fold\n",
+						chair_to_consider);
+					this_player_got_dealt = true;    
+				}
 			}
 		}
 		if (this_player_got_dealt) {
@@ -190,13 +190,13 @@ void CSymbolEngineActiveDealtPlaying::CalculateDealtBits() {
 			AssertRange(_playersdealtbits, 0, k_bits_all_ten_players_1_111_111_111);
 		}
 	}
-  write_log(Preferences()->debug_symbolengine(),
-    // _playersdealtbits once as decimal, once as 4-digit hexadecimal
-    "[CSymbolEngineActiveDealtPlaying] playersdealtbits = %i = %#4x\n",
-    _playersdealtbits, _playersdealtbits);
-  if (nplayersdealt() > _maxnplayersdealt) {
-    _maxnplayersdealt = nplayersdealt();
-  }
+	write_log(Preferences()->debug_symbolengine(),
+		// _playersdealtbits once as decimal, once as 4-digit hexadecimal
+		"[CSymbolEngineActiveDealtPlaying] playersdealtbits = %i = %#4x\n",
+		_playersdealtbits, _playersdealtbits);
+	if (nplayersdealt() > _maxnplayersdealt) {
+		_maxnplayersdealt = nplayersdealt();
+	}
 }
 
 bool CSymbolEngineActiveDealtPlaying::EvaluateSymbol(const CString name, double *result, bool log /* = false */)

@@ -230,13 +230,15 @@ void CScraper::ScrapeBetsAndBalances() {
 		//   * scrape everybody up to my first action (then we know who was dealt)
 		//   * after that we scrape only dealt players
 		//   * and also players who have cards (fresh sitdown and hand-reset, former playersdealt is wrong)
+		/*
 		if ((!p_engine_container->symbol_engine_history()->DidActThisHand())
 			|| IsBitSet(p_engine_container->symbol_engine_active_dealt_playing()->playersdealtbits(), i)
       || p_table_state->Player(i)->HasAnyCards())
 		{
+		*/
 			ScrapeBet(i);
 			ScrapeBalance(i);
-		}
+		//}
 	}
 }
 
@@ -615,16 +617,16 @@ CString CScraper::ScrapeUPBalance(int chair, char scrape_u_else_p) {
   name.Format("%c%dbalance", scrape_u_else_p, chair);
   if (EvaluateRegion(name, &text)) {
 		if (p_string_match->IsStringAllin(text)) { 
-      write_log(Preferences()->debug_scraper(), "[CScraper] %s, result ALLIN", name);
-       return Number2CString(0.0);
-		}	else if (	text.MakeLower().Find("out")!=-1
+			write_log(Preferences()->debug_scraper(), "[CScraper] %s, result ALLIN", name);
+			return Number2CString(0.0);
+		} else if (	text.MakeLower().Find("out")!=-1
 				||	text.MakeLower().Find("inactive")!=-1
 				||	text.MakeLower().Find("away")!=-1 ) {
 			p_table_state->Player(chair)->set_active(false);
 			write_log(Preferences()->debug_scraper(), "[CScraper] %s, result OUT/INACTIVE/AWAY\n", name);
-      return Number2CString(kUndefinedZero);
-		}	else {
-      return text;
+			return Number2CString(kUndefinedZero);
+		} else {
+			return text;
 		}
 	}
   // Number2CString(kUndefined) returns "-1",
@@ -637,15 +639,18 @@ CString CScraper::ScrapeUPBalance(int chair, char scrape_u_else_p) {
 
 void CScraper::ScrapeBalance(int chair) {
 	RETURN_IF_OUT_OF_RANGE (chair, p_tablemap->LastChair())
-  // Scrape uXbalance and pXbalance
-  CString balance = ScrapeUPBalance(chair, 'p');
-  if (p_table_state->Player(chair)->_balance.SetValue(balance)) {
-    return;
-  }
-  balance = ScrapeUPBalance(chair, 'u');
-  if (p_table_state->Player(chair)->_balance.SetValue(balance)) {
-    return;
-  }
+	// Scrape uXbalance and pXbalance
+	CString balance = Number2CString(0.0); 
+	p_table_state->Player(chair)->_balance.SetValue(balance);
+
+	balance = ScrapeUPBalance(chair, 'p');
+	if (p_table_state->Player(chair)->_balance.SetValue(balance)) {
+		return;
+	}
+	balance = ScrapeUPBalance(chair, 'u');
+	if (p_table_state->Player(chair)->_balance.SetValue(balance)) {
+		return;
+	}
 }
 
 void CScraper::ScrapeBet(int chair) {

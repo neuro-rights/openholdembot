@@ -100,12 +100,15 @@ int CSymbolEngineChairs::HeadsupChair() {
 }
 
 int CSymbolEngineChairs::ChairByDealposition(int dealposition) {
-  for (int i = 0; i < _nchairs; ++i) {
-    if (p_engine_container->symbol_engine_poker_action()->DealPosition(i) == dealposition) {
-      return i;
-    }
-  }
-  return kUndefined;
+	for (int i = 0; i < _nchairs; ++i) {
+		if (!IsBitSet(p_engine_container->symbol_engine_active_dealt_playing()->playersdealtbits(), i)) {
+			continue;
+		}
+		if (p_engine_container->symbol_engine_poker_action()->DealPosition(i) == dealposition) {
+			return i;
+		}
+	}
+	return kUndefined;
 }
 
 int CSymbolEngineChairs::NBlindsAtTheTable() {
